@@ -10,6 +10,7 @@ PACMAN_EXECUTABLE = "pacman"
 PACMAN_SYNC_ARGS = "-Sy"
 PACMAN_UPGRADE_ARGS = "-Su"
 PACMAN_INSTALL_ARGS = "-S"
+PACMAN_REMOVE_ARGS = "-R"
 PACMAN_AUTOREMOVE_ARGS = "-Rns $(" + PACMAN_EXECUTABLE + " -Qtdq)"
 
 
@@ -33,6 +34,11 @@ def install(package_list):
     execute("Installing packages", "{} {}".format(PACMAN_INSTALL_ARGS, " ".join(package_list)))
 
 
+def remove(package_list):
+    """Removes a list of packages"""
+    execute("Removing packages", "{} {}".format(PACMAN_REMOVE_ARGS, " ".join(package_list)))
+
+
 def execute(msg, args):
     """Executes a generic command for pacman.
 
@@ -49,7 +55,8 @@ if __name__ == "__main__":
     print("MSPacman v0.1 20170420\n")
     parser = argparse.ArgumentParser()
     parser.add_argument("operation",
-                        help="Selects the operation to execute with a list of packages to target, if needed."
+                        help="Selects the operation to execute with a list of packages to target, if needed. "
+                        "Supported operations: update, upgrade, autoremove, install, remove. "
                         "Example: mspac.py install package1 package2",
                         nargs="*")
 
@@ -70,6 +77,8 @@ if __name__ == "__main__":
         autoremove()
     elif args.operation[0] == "install":
         install(args.operation[1:])
+    elif args.operation[0] == "remove":
+        remove(args.operation[1:])
     else:
         print("Operation unsupported. See help.")
 
