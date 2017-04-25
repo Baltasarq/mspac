@@ -6,6 +6,7 @@ import argparse
 import os
 
 
+PACMAN_LAUNCHER = "sudo"
 PACMAN_EXECUTABLE = "pacman"
 PACMAN_SYNC_ARGS = "-Sy"
 PACMAN_UPGRADE_ARGS = "-Su"
@@ -45,7 +46,7 @@ def execute(msg, args):
         :param msg: The msg to show describing the operation.
         :param args: The arguments for the command, after "pacman".
     """
-    cmd = PACMAN_EXECUTABLE + " " + args
+    cmd = PACMAN_LAUNCHER + " " + PACMAN_EXECUTABLE + " " + args
     print(msg + " with: " + cmd)
     ret_code = os.system(cmd)
     print("finished with code: " + str(ret_code))
