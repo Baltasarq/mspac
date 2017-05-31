@@ -4,20 +4,19 @@ An apt-like wrapper for pacman.
 
 ## Getting Started
 
-Just clone this repository and execute mspac.py with the supported arguments. Run it without arguments to check the available options.
-
 In order to run this software, you need **Python**, it does not matter what version (provided it is updated enough), **mspac** will run in **Python 2** and **Python 3**.
 
 ## Installation
 
-You can use pip in order to retrieve the package from PyPI:
+You can (and you are encouraged to) use pip in order to retrieve the package from PyPI:
 `sudo pip install mspac`
+Then run it without arguments (`mspac`), to check the available options.
 
-Remember that, in that case, this script will be available system-wide, and that, instead of using `python mspac.py`, you will be able to use just `mspac`. This is important for the examples given below.
+Alternately, just clone this repository and execute `mspac/mspac_tool.py` with the supported arguments.
 
 ## Usage
 
-`python mspac.py [-h] [operation [packages ...]]`
+`mspac [-h] [operation [packages ...]]`
 
 ## Examples
 
@@ -25,22 +24,22 @@ Remember that, in that case, this script will be available system-wide, and that
 
 That will install package1 and package2 with pacman
 
-`python mspac.py install package1 package2`
+`mspac install package1 package2`
 
 ### Updating the repositories
 
 That will update the repositories with pacman
 
-`python mspac.py update`
+`mspac update`
 
 ### Upgrading packages
 
 Upgrades with pacman all packages that are not up-to-date
 
-`python mspac.py upgrade`
+`mspac upgrade`
 
 ### Remove unused / orphan packages
 
 That will remove packages that are no longer needed in the system
 
-`python mspac.py autoremove`
+`mspac autoremove`
