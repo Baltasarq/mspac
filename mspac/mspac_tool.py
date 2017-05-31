@@ -2,6 +2,9 @@
 # encoding: utf-8
 # mspac (c) 2017 baltasarq@gmail.com MIT License
 
+
+__version__ = "0.1.2 20170531"
+
 import argparse
 import os
 
@@ -51,36 +54,39 @@ def execute(msg, args):
     ret_code = os.system(cmd)
     print("finished with code: " + str(ret_code))
 
-
-if __name__ == "__main__":
-    print("MSPacman v0.1 20170420\n")
+def main():
+    print("MSPacman v" + __version__ + '\n')
     parser = argparse.ArgumentParser()
     parser.add_argument("operation",
                         help="Selects the operation to execute with a list of packages to target, if needed. "
                         "Supported operations: update, upgrade, autoremove, install, remove. "
-                        "Example: mspac.py install package1 package2",
-                        nargs="*")
+                        "Example: mspac.py install package1...",
+                        nargs="+")
 
     args = parser.parse_args()
-    args.operation = [x.lower() for x in args.operation]
-
-    if args.operation[0] == "update":
-        if len(args.operation) > 1:
-            print("Update needs no parameters. Ignoring them")
-        update()
-    elif args.operation[0] == "upgrade":
-        if len(args.operation) > 1:
-            print("Upgrade needs no parameters. Ignoring them")
-        upgrade()
-    elif args.operation[0] == "autoremove":
-        if len(args.operation) > 1:
-            print("Autoremove needs no parameters. Ignoring them")
-        autoremove()
-    elif args.operation[0] == "install":
-        install(args.operation[1:])
-    elif args.operation[0] == "remove":
-        remove(args.operation[1:])
-    else:
-        print("Operation unsupported. See help.")
+    
+    if len(args.operation) > 0:
+        args.operation = [x.lower() for x in args.operation]
+        if args.operation[0] == "update":
+            if len(args.operation) > 1:
+                print("Update needs no parameters. Ignoring them")
+            update()
+        elif args.operation[0] == "upgrade":
+            if len(args.operation) > 1:
+                print("Upgrade needs no parameters. Ignoring them")
+            upgrade()
+        elif args.operation[0] == "autoremove":
+            if len(args.operation) > 1:
+                print("Autoremove needs no parameters. Ignoring them")
+            autoremove()
+        elif args.operation[0] == "install":
+            install(args.operation[1:])
+        elif args.operation[0] == "remove":
+            remove(args.operation[1:])
+        else:
+            print("Operation unsupported. See help.")
 
     print("End\n")
+
+if __name__ == "__main__":
+    main()
