@@ -3,7 +3,7 @@
 # mspac (c) 2017 baltasarq@gmail.com MIT License
 
 
-__version__ = "0.2.0 20170602"
+__version__ = "0.2.1 20170602"
 
 import argparse
 import os
@@ -60,7 +60,7 @@ def main():
     parser.add_argument("operation",
                         help="Selects the operation to execute with a list of packages to target, if needed. "
                         "Supported operations: sync, update, upgrade, autoremove, install, remove. "
-                        "Example: mspac.py install package1...",
+                        "Example: mspac install package1...",
                         nargs="+")
 
     args = parser.parse_args()
