@@ -22,24 +22,36 @@ Alternately, just clone this repository and execute `mspac/mspac_tool.py` with t
 
 ### Installing a package
 
-That will install package1 and package2 with pacman
+The following command will install package1 and package2:
 
 `mspac install package1 package2`
 
+### Removing a package
+
+Remove package1 and package2:
+
+`mspac remove package1 package2`
+
 ### Updating the repositories
 
-That will update the repositories with pacman
+You can easily update the repositories:
 
 `mspac update`
 
 ### Upgrading packages
 
-Upgrades with pacman all packages that are not up-to-date
+Upgrades all packages that are not up-to-date:
 
 `mspac upgrade`
 
+### Syncing packages
+
+Updates the repositories and then updates all packages that are not up-to-date:
+
+`mspac sync`
+
 ### Remove unused / orphan packages
 
-That will remove packages that are no longer needed in the system
+Remove packages that are no longer needed in the system:
 
 `mspac autoremove`

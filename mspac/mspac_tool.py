@@ -3,7 +3,7 @@
 # mspac (c) 2017 baltasarq@gmail.com MIT License
 
 
-__version__ = "0.1.2 20170531"
+__version__ = "0.2.0 20170602"
 
 import argparse
 import os
@@ -59,7 +59,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("operation",
                         help="Selects the operation to execute with a list of packages to target, if needed. "
-                        "Supported operations: update, upgrade, autoremove, install, remove. "
+                        "Supported operations: sync, update, upgrade, autoremove, install, remove. "
                         "Example: mspac.py install package1...",
                         nargs="+")
 
@@ -67,7 +67,13 @@ def main():
     
     if len(args.operation) > 0:
         args.operation = [x.lower() for x in args.operation]
-        if args.operation[0] == "update":
+        
+        if args.operation[0] == "sync":
+            if len(args.operation) > 1:
+                print("Sync needs no parameters. Ignoring them")
+            update()
+            upgrade()
+        elif args.operation[0] == "update":
             if len(args.operation) > 1:
                 print("Update needs no parameters. Ignoring them")
             update()
