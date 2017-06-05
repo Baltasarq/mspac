@@ -1,5 +1,9 @@
 #!/usr/bin/env sh
+echo Cleaning...
 rm -Rf dist
 rm -Rf build
-python setup.py build sdist bdist_wheel --universal
+echo "Creating source dist..."
+python setup.py build sdist
+echo "Creating binary dist"
+python setup.py build bdist_wheel --universal
 sudo pip install -e .
