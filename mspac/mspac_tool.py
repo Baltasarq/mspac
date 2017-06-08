@@ -3,7 +3,7 @@
 # mspac (c) 2017 baltasarq@gmail.com MIT License
 
 
-__version__ = "0.3.1 20170605"
+__version__ = "0.3.2 20170608"
 
 import argparse
 import subprocess
@@ -11,47 +11,96 @@ import subprocess
 
 CMD_ROOT = "sudo"
 CMD_PKGR = "pacman"
-SYNC_ARGS = "-Sy"
+UPDATE_ARGS = "-Sy"
+FORCE_ARG = "--force"
 UPGRADE_ARGS = "-Su"
 INSTALL_ARGS = "-S"
 REMOVE_ARGS = "-R"
 SHOW_ARGS = "-Qi"
 LIST_ARGS = "-Ss"
-AUTOREMOVE_ARGS = "-Rns $(" + CMD_PKGR + " -Qtdq)"
+PURGE_ARGS = "-Rns"
+ORPHAN_ARGS = "-Qtdq"
 
 
-def update():
+def update(force):
     """Updates pacman's databases."""
-    execute("Updating", [CMD_ROOT, CMD_PKGR, SYNC_ARGS])
+    args = [CMD_ROOT, CMD_PKGR]
+
+    if force:
+        args.append(FORCE_ARG)
+
+    ret_info = execute("Updating", args + [UPDATE_ARGS])
+    
+    if ret_info.returncode == 0:
+        print("Databases updated.")
 
 
-def upgrade():
+def upgrade(force):
     """Upgrades all available packages."""
-    execute("Upgrading", [CMD_ROOT, CMD_PKGR, UPGRADE_ARGS])
+    args = [CMD_ROOT, CMD_PKGR]
+    
+    if force:
+        args.append(FORCE_ARG)
+
+
+    ret_info = execute("Upgrading", args + [UPGRADE_ARGS])
+
+    if ret_info.returncode == 0:
+        print("All pending packages upgraded.")
 
 
 def autoremove():
     """Removes all unneeded packages."""
-    execute("Removing orphans", [CMD_ROOT, CMD_PKGR, AUTOREMOVE_ARGS])
+    ret_info = execute("Obtaining orphans", [CMD_PKGR, ORPHAN_ARGS])
+    pkg_info = ret_info.stdout.split()
+
+    if ret_info.returncode == 0:
+        print( "pks:", ' '.join(pkg_info))
+        ret_info = execute("Removing orphans",
+                           [CMD_ROOT, CMD_PKGR, PURGE_ARGS] + pkg_info)
+
+        if ret_info.returncode == 0:
+            print("Orphaned packages removed.")
 
 
-def install(pkg_list):
+
+def install(pkg_list, force):
     """Installs a list of packages."""
-    execute("Installing packages", [CMD_ROOT, CMD_PKGR, INSTALL_ARGS] + pkg_list)
+    args = [CMD_ROOT, CMD_PKGR]
+
+    if force:
+        args.append(FORCE_ARG)
+
+    ret_info = execute("Installing packages", args + [INSTALL_ARGS] + pkg_list)
+
+    if ret_info.returncode == 0:
+        print("Packages installed successfully.")
 
 
-def remove(pkg_list):
+def remove(pkg_list, force):
     """Removes a list of packages."""
-    execute("Removing packages", [CMD_ROOT, CMD_PKGR, REMOVE_ARGS] + pkg_list)
+    args = [CMD_ROOT, CMD_PKGR]
+
+    if force:
+        args.append(FORCE_ARG)
+
+    ret_info = execute("Removing packages", args + [REMOVE_ARGS] + pkg_list)
+
+    if ret_info.returncode == 0:
+        print("Packages removed successfully.")
 
 
 def show(pkg_list):
     """Shows detailed info about a given package."""
-    execute("Showing details", [CMD_PKGR, SHOW_ARGS] + pkg_list)
+    ret_info = execute("Showing details", [CMD_PKGR, SHOW_ARGS] + pkg_list)
+    if ret_info.returncode == 0:
+        print(ret_info.stdout)
 
 def lists(pkg_list):
     """Shows a list of packages given keywords."""
-    execute("Listing packages", [CMD_PKGR, LIST_ARGS] + pkg_list)
+    ret_info = execute("Listing packages", [CMD_PKGR, LIST_ARGS] + pkg_list)
+    if ret_info.returncode == 0:
+        print(ret_info.stdout)
 
 
 def execute(msg, call_args):
@@ -61,8 +110,16 @@ def execute(msg, call_args):
         :param args: The arguments for the command, after "pacman".
     """
     print(msg + " with: " + " ".join(call_args))
-    ret_code = subprocess.call(call_args)
-    print("finished with code: " + str(ret_code))
+
+    ret_info = subprocess.run(
+        call_args,
+        universal_newlines=True,
+        stdout=subprocess.PIPE)
+
+    if ret_info.returncode != 0:
+        print("finished with code:", ret_info.returncode)
+
+    return ret_info
 
 def main():
     print("MSPacman v" + __version__ + '\n')
@@ -72,6 +129,9 @@ def main():
                         "Supported operations: sync, update, upgrade, autoremove, install, remove, show, list. "
                         "Example: mspac install package1...",
                         nargs="+")
+    parser.add_argument("-f", "--force",
+                        action="store_true",
+                        help="Forces the operation even when conflicts or errors are found. Example: mspac --force install package1")
 
     args = parser.parse_args()
 
@@ -81,24 +141,24 @@ def main():
         if args.operation[0] == "sync":
             if len(args.operation) > 1:
                 print("Sync needs no parameters. Ignoring them")
-            update()
-            upgrade()
+            update(args.force)
+            upgrade(args.force)
         elif args.operation[0] == "update":
             if len(args.operation) > 1:
                 print("Update needs no parameters. Ignoring them")
-            update()
+            update(args.force)
         elif args.operation[0] == "upgrade":
             if len(args.operation) > 1:
                 print("Upgrade needs no parameters. Ignoring them")
-            upgrade()
+            upgrade(args.force)
         elif args.operation[0] == "autoremove":
             if len(args.operation) > 1:
                 print("Autoremove needs no parameters. Ignoring them")
             autoremove()
         elif args.operation[0] == "install":
-            install(args.operation[1:])
+            install(args.operation[1:], args.force)
         elif args.operation[0] == "remove":
-            remove(args.operation[1:])
+            remove(args.operation[1:], args.force)
         elif args.operation[0] == "show":
             show(args.operation[1:])
         elif args.operation[0] == "list":

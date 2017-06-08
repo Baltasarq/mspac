@@ -20,6 +20,8 @@ Alternately, just clone this repository and execute `mspac/mspac_tool.py` with t
 
 ## Examples
 
+Add '-f' or '--force' to force operations in case of errors.
+
 ### Installing a package
 
 The following command will install package1 and package2:
