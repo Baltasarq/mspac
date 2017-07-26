@@ -8,12 +8,19 @@
 
 <h2 id="gettingstarted">Getting Started</h2>
 
-<p>In order to run this software, you need <strong>Python</strong>, it does not matter what version (provided it is updated enough), <strong>mspac</strong> will run in <strong>Python 2</strong> and <strong>Python 3</strong>.</p>
+<p>In order to run this software, you need <strong>Python</strong>, it does not matter what version (provided it is updated enough), <strong>mspac</strong> will only run in <strong>Python 3</strong>.</p>
 
 <h2 id="installation">Installation</h2>
 
 <p>You can use pip in order to retrieve the package from PyPI:
 <code>sudo pip install mspac</code></p>
+
+<h2 id="Note">Note</h2>
+<p>Since version 0.3.4, <i>sync</i>, <i>upgrade</i> and <i>update</i>
+update the databases and install outdated packages, so there is no difference among them.
+This is because the recommendations in the <b>pacman</b> documentation about
+always completely synchronize the system. The command <i>sync</i> is left for
+backwards compatibility.</p>
 
 <h2 id="usage">Usage</h2>
 
@@ -21,13 +28,13 @@
 
 <p>Use `mspac -h` to get a complete list of available options. Use '--force' or '-f' to force the operation. The availabe operations at the time of writing are:</p>
 <ul>
-    <li>sync: Updates databases and upgrades packages. No arguments.
+    <li>sync:  Updates package databases &amp; upgrades outdated packages. No arguments.
         <br><code>mspac sync</code></li>
     <li>autoremove: Removes orphaned packages. No arguments.
         <br><code>mspac autoremove</code></li>
-    <li>update: Updates package databases. No arguments.
+    <li>update: Updates package databases &amp; upgrades outdated packages. No arguments.
         <br><code>mspac update</code></li>
-    <li>upgrade: Upgrades all pending packages. No arguments.
+    <li>upgrade:  Updates package databases &amp; upgrades outdated packages. No arguments.
         <br><code>mspac upgrade</code></li>
     <li>install: Installs given packages. Arguments: a list of packages.
         <br><code>mspac install package1 [package2 [package...]]</code></li>

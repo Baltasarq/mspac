@@ -14,7 +14,7 @@ with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
      name="mspac",
-     version="0.3.2",
+     version="0.3.5",
      description="An apt-like pacman wrapper.",
      long_description=long_description_text,
      url="https://github.com/baltasarq/mspac/",
@@ -28,7 +28,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
 
         # Indicate who your project is intended for
         "Intended Audience :: End Users/Desktop",
@@ -40,7 +40,6 @@ setup(
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
-        "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 3",
      ],
      keywords="pacman aur",

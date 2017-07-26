@@ -3,7 +3,7 @@
 # mspac (c) 2017 baltasarq@gmail.com MIT License
 
 
-__version__ = "0.3.2 20170608"
+__version__ = "0.3.5 20170711"
 
 import argparse
 import subprocess
@@ -11,9 +11,8 @@ import subprocess
 
 CMD_ROOT = "sudo"
 CMD_PKGR = "pacman"
-UPDATE_ARGS = "-Sy"
 FORCE_ARG = "--force"
-UPGRADE_ARGS = "-Su"
+UPGRADE_ARGS = "-Syu"
 INSTALL_ARGS = "-S"
 REMOVE_ARGS = "-R"
 SHOW_ARGS = "-Qi"
@@ -22,45 +21,37 @@ PURGE_ARGS = "-Rns"
 ORPHAN_ARGS = "-Qtdq"
 
 
-def update(force):
-    """Updates pacman's databases."""
-    args = [CMD_ROOT, CMD_PKGR]
-
-    if force:
-        args.append(FORCE_ARG)
-
-    ret_info = execute("Updating", args + [UPDATE_ARGS])
-    
-    if ret_info.returncode == 0:
-        print("Databases updated.")
-
-
 def upgrade(force):
-    """Upgrades all available packages."""
+    """Updates databases & Upgrades all available packages."""
     args = [CMD_ROOT, CMD_PKGR]
-    
+
     if force:
         args.append(FORCE_ARG)
 
 
-    ret_info = execute("Upgrading", args + [UPGRADE_ARGS])
+    ret_info = execute("Updating db & upgrading", args + [UPGRADE_ARGS])
 
     if ret_info.returncode == 0:
-        print("All pending packages upgraded.")
+        print("All outdated packages upgraded successfully.")
 
 
 def autoremove():
     """Removes all unneeded packages."""
-    ret_info = execute("Obtaining orphans", [CMD_PKGR, ORPHAN_ARGS])
-    pkg_info = ret_info.stdout.split()
+    ret_info = execute(
+                        "Obtaining orphans",
+                        [CMD_PKGR, ORPHAN_ARGS],
+                        capture_output=True)
 
     if ret_info.returncode == 0:
+        pkg_info = ret_info.stdout.split()
         print( "pks:", ' '.join(pkg_info))
         ret_info = execute("Removing orphans",
                            [CMD_ROOT, CMD_PKGR, PURGE_ARGS] + pkg_info)
 
         if ret_info.returncode == 0:
-            print("Orphaned packages removed.")
+            print("Orphaned packages removed successfully.")
+    else:
+        print("Nothing else to do.")
 
 
 
@@ -92,29 +83,36 @@ def remove(pkg_list, force):
 
 def show(pkg_list):
     """Shows detailed info about a given package."""
-    ret_info = execute("Showing details", [CMD_PKGR, SHOW_ARGS] + pkg_list)
-    if ret_info.returncode == 0:
-        print(ret_info.stdout)
+    execute("Showing details", [CMD_PKGR, SHOW_ARGS] + pkg_list)
+
 
 def lists(pkg_list):
     """Shows a list of packages given keywords."""
-    ret_info = execute("Listing packages", [CMD_PKGR, LIST_ARGS] + pkg_list)
-    if ret_info.returncode == 0:
-        print(ret_info.stdout)
+    execute("Listing packages", [CMD_PKGR, LIST_ARGS] + pkg_list)
 
 
-def execute(msg, call_args):
+def execute(msg, call_args, capture_output=False):
     """Executes a generic command for pacman.
 
         :param msg: The msg to show describing the operation.
         :param args: The arguments for the command, after "pacman".
+        :param capture_output: Captures output if true.
+        :return: A CompletedProcess object.
     """
+    # Report
     print(msg + " with: " + " ".join(call_args))
 
+    # Prepare the standard output argument
+    stdout_arg = None
+
+    if capture_output:
+        stdout_arg = subprocess.PIPE
+
+    # Do it!
     ret_info = subprocess.run(
         call_args,
         universal_newlines=True,
-        stdout=subprocess.PIPE)
+        stdout=stdout_arg)
 
     if ret_info.returncode != 0:
         print("finished with code:", ret_info.returncode)
@@ -141,12 +139,11 @@ def main():
         if args.operation[0] == "sync":
             if len(args.operation) > 1:
                 print("Sync needs no parameters. Ignoring them")
-            update(args.force)
             upgrade(args.force)
         elif args.operation[0] == "update":
             if len(args.operation) > 1:
                 print("Update needs no parameters. Ignoring them")
-            update(args.force)
+            upgrade(args.force)
         elif args.operation[0] == "upgrade":
             if len(args.operation) > 1:
                 print("Upgrade needs no parameters. Ignoring them")

@@ -4,7 +4,7 @@ An apt-like wrapper for pacman.
 
 ## Getting Started
 
-In order to run this software, you need **Python**, it does not matter what version (provided it is updated enough), **mspac** will run in **Python 2** and **Python 3**.
+In order to run this software, you need **Python**, it does not matter what version (provided it is updated enough), **mspac** will only run in **Python 3**.
 
 ## Installation
 
@@ -36,13 +36,13 @@ Remove package1 and package2:
 
 ### Updating the repositories
 
-You can easily update the repositories:
+You can easily update the databases and upgrade all packages:
 
 `mspac update`
 
 ### Upgrading packages
 
-Upgrades all packages that are not up-to-date:
+Updates the databases, and upgrades all packages that are not up-to-date:
 
 `mspac upgrade`
 
@@ -51,6 +51,8 @@ Upgrades all packages that are not up-to-date:
 Updates the repositories and then updates all packages that are not up-to-date:
 
 `mspac sync`
+
+*Note: update, upgrade and sync are commands that obtain the same result.*
 
 ### Remove unused / orphan packages
 
