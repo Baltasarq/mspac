@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # encoding: utf-8
 # (c) 2017 baltasarq@gmail.com MIT License
 
