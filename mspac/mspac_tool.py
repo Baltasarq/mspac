@@ -28,7 +28,6 @@ def upgrade(force):
     if force:
         args.append(FORCE_ARG)
 
-
     ret_info = execute("Updating db & upgrading", args + [UPGRADE_ARGS])
 
     if ret_info.returncode == 0:
@@ -38,13 +37,13 @@ def upgrade(force):
 def autoremove():
     """Removes all unneeded packages."""
     ret_info = execute(
-                        "Obtaining orphans",
-                        [CMD_PKGR, ORPHAN_ARGS],
-                        capture_output=True)
+        "Obtaining orphans",
+        [CMD_PKGR, ORPHAN_ARGS],
+        capture_output=True)
 
     if ret_info.returncode == 0:
         pkg_info = ret_info.stdout.split()
-        print( "pks:", ' '.join(pkg_info))
+        print("pks:", ' '.join(pkg_info))
         ret_info = execute("Removing orphans",
                            [CMD_ROOT, CMD_PKGR, PURGE_ARGS] + pkg_info)
 
@@ -52,7 +51,6 @@ def autoremove():
             print("Orphaned packages removed successfully.")
     else:
         print("Nothing else to do.")
-
 
 
 def install(pkg_list, force):
@@ -119,17 +117,21 @@ def execute(msg, call_args, capture_output=False):
 
     return ret_info
 
+
 def main():
     print("MSPacman v" + __version__ + '\n')
     parser = argparse.ArgumentParser()
-    parser.add_argument("operation",
-                        help="Selects the operation to execute with a list of packages to target, if needed. "
-                        "Supported operations: sync, update, upgrade, autoremove, install, remove, show, list. "
-                        "Example: mspac install package1...",
-                        nargs="+")
-    parser.add_argument("-f", "--force",
-                        action="store_true",
-                        help="Forces the operation even when conflicts or errors are found. Example: mspac --force install package1")
+    parser.add_argument(
+        "operation",
+        help="Selects the operation to execute with a list of packages to target, if needed. "
+        "Supported operations: sync, update, upgrade, autoremove, install, remove, show, list. "
+        "Example: mspac install package1...",
+        nargs="+")
+    parser.add_argument(
+        "-f",
+        "--force",
+        action="store_true",
+        help="Forces the operation even when conflicts or errors are found. Example: mspac --force install package1")
 
     args = parser.parse_args()
 
@@ -164,6 +166,7 @@ def main():
             print("Operation unsupported. See help.")
 
     print("End\n")
+
 
 if __name__ == "__main__":
     main()
