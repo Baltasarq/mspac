@@ -32,6 +32,8 @@ def upgrade(force):
 
     if ret_info.returncode == 0:
         print("All outdated packages upgraded successfully.")
+        
+    return ret_info.returncode
 
 
 def autoremove():
@@ -47,10 +49,14 @@ def autoremove():
         ret_info = execute("Removing orphans",
                            [CMD_ROOT, CMD_PKGR, PURGE_ARGS] + pkg_info)
 
+        toret = ret_info.returncode
         if ret_info.returncode == 0:
             print("Orphaned packages removed successfully.")
     else:
+        toret = 0
         print("Nothing else to do.")
+        
+    return toret
 
 
 def install(pkg_list, force):
@@ -65,6 +71,8 @@ def install(pkg_list, force):
     if ret_info.returncode == 0:
         print("Packages installed successfully.")
 
+    return ret_info.returncode
+
 
 def remove(pkg_list, force):
     """Removes a list of packages."""
@@ -77,16 +85,18 @@ def remove(pkg_list, force):
 
     if ret_info.returncode == 0:
         print("Packages removed successfully.")
+                
+    return ret_info.returncode
 
 
 def show(pkg_list):
     """Shows detailed info about a given package."""
-    execute("Showing details", [CMD_PKGR, SHOW_ARGS] + pkg_list)
+    return execute("Showing details", [CMD_PKGR, SHOW_ARGS] + pkg_list).returncode
 
 
 def lists(pkg_list):
     """Shows a list of packages given keywords."""
-    execute("Listing packages", [CMD_PKGR, LIST_ARGS] + pkg_list)
+    return execute("Listing packages", [CMD_PKGR, LIST_ARGS] + pkg_list).returncode
 
 
 def execute(msg, call_args, capture_output=False):
